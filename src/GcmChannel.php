@@ -72,16 +72,21 @@ class GcmChannel
         $packet = new Packet();
 
         $packet->setRegistrationIds($tokens);
-        $packet->setCollapseKey(str_slug($message->title));
-        $packet->setData([
-                'title' => $message->title,
-                'message' => $message->message,
-            ] + $message->data);
-        $packet->setNotification([
-                'title' => $message->title,
-                'body' => $message->message,
-                'sound' => $message->sound,
-            ] + $message->data);
+
+        if (!empty($message->title)) {
+            $packet->setCollapseKey(str_slug($message->title));
+            $packet->setData([
+                    'title' => $message->title,
+                    'message' => $message->message,
+                ] + $message->data);
+            $packet->setNotification([
+                    'title' => $message->title,
+                    'body' => $message->message,
+                    'sound' => $message->sound,
+                ] + $message->data);
+        } else {
+            $packet->setData($message->data);
+        }
 
         return $packet;
     }
